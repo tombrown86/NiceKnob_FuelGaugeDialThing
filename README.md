@@ -19,3 +19,17 @@ elem.appendChild(node);
 ```
 
 <img width="215" alt="Screenshot 2024-02-06 at 13 30 22" src="https://github.com/tombrown86/NiceKnob_FuelGaugeDialThing/assets/15341007/2a9df738-c444-4d11-8f8a-82c678551786">
+
+
+
+With needle
+
+```
+<script>
+// with needle at value 70
+knob.setValues([100, 60, 50], ['green', 'orange', 'maroon'], 70);
+</script>
+```
+  
+
+<img width="215" alt="Screenshot 2024-02-06 at 16 09 19" src="https://github.com/tombrown86/NiceKnob_FuelGaugeDialThing/assets/15341007/12caa9de-5178-4273-9c3d-0204500ae8c9">

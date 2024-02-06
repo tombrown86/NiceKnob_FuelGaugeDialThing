@@ -2,10 +2,13 @@
 
 JS Canvas multi value fuel gauge / dial / knob thing
 
+
 E.g.
 ```
 <div id="knob"></div>
 <script>
+// E.g. width & height = 200px.. Value range from 0 to 100
+// 3 values passed in with 3 different colours
 const knob = (new NiceKnob()).build(200, {minimum_value: 0, maximum_value: 100});
 knob.setValues([100, 60, 50], ['green', 'orange', 'maroon']);
 

@@ -17,6 +17,7 @@ function NiceKnob() {
 			default_colour: 'gray',
 			values: [],
 			colours: [],
+			needle_value: null,
 			get: function () {
 				const div = this._div;
 				return div;
@@ -83,17 +84,37 @@ function NiceKnob() {
 					ctx.textAlign = 'center';
 					ctx.textBaseline = 'middle';
 					ctx.fillText(value, center_coord, center_coord - center_coord / this.values.length * (index - 1));
-
-					div.appendChild(canvas);
 				});
+				
+				// needle
+				if(this.needle_value !== null) {
+					const rel_value = (this.needle_value - this.minimum_value) / (this.maximum_value - this.minimum_value);
+					const rel_angle = rel_value * (this.angle_end - this.angle_start);
+					const angle_val = actual_start + rel_angle;
+					ctx.beginPath();
+					ctx.arc(center_coord, center_coord, radius, actual_start + rel_angle - 0.05, actual_start + rel_angle + 0.05);
+					ctx.strokeStyle = 'black';
+					ctx.lineCap = 'butt';
+					ctx.lineWidth = line_width * 1.6;
+					ctx.stroke();
+				}
+
+				div.appendChild(canvas);
 			},
-			setValues: function (values, colours) {
+			safeValue: function(value) {
+				return value === null
+					? null
+					: Math.round(Math.max(this.minimum_value, Math.min(this.maximum_value, value)));
+			},
+			setValues: function (values, colours, needle_val) {
 				const safe_vals = [];
 				for (const value of values) {
-					safe_vals.push(Math.round(Math.max(this.minimum_value, Math.min(this.maximum_value, value))));
+					safe_vals.push(this.safeValue(value));
 				}
 				this.values = safe_vals;
 				this.colours = colours;
+				this.needle_value = this.safeValue(needle_val);
+
 				this.paint();
 			},
 			setSize: function (size) {

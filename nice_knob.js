@@ -67,6 +67,12 @@ function NiceKnob() {
 					if (typeof colour === 'object') {
 						const bar_colour = colour.bar_colour;
 						const glow_colour = colour.glow_colour;
+//	gradient not working
+//						const gradient = ctx.createLinearGradient(20, 0, 220, 0);
+//						gradient.addColorStop(0, bar_colour);
+//						gradient.addColorStop(1, glow_colour);
+//						ctx.fillStyle = gradient;
+//						font_colour = bar_colour;
 						ctx.strokeStyle = bar_colour;
 						font_colour = bar_colour;
 					} else {
@@ -102,7 +108,7 @@ function NiceKnob() {
 				div.appendChild(canvas);
 			},
 			safeValue: function(value) {
-				return value === null
+				return value == null
 					? null
 					: Math.round(Math.max(this.minimum_value, Math.min(this.maximum_value, value)));
 			},

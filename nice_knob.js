@@ -67,7 +67,7 @@ function NiceKnob() {
 					if (typeof colour === 'object') {
 						const bar_colour = colour.bar_colour;
 						const glow_colour = colour.glow_colour;
-//	gradient not working
+//	TODO: handle gradient / glow effect
 //						const gradient = ctx.createLinearGradient(20, 0, 220, 0);
 //						gradient.addColorStop(0, bar_colour);
 //						gradient.addColorStop(1, glow_colour);

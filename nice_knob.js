@@ -49,17 +49,41 @@ function NiceKnob() {
 				ctx.strokeStyle = this.default_colour;
 				ctx.stroke();
 
-				// to loop through values in descending order with reference
-				// to the original index positions (for related colour lookup)
+				// to loop through values with positive in descending order
+				// and negatives ascending.. whilst keeping track of their
+				// index positions (for related colour lookup below)
 				const indexed_values = this.values.map((value, index) => ({value, index}));
-				const sorted_values = indexed_values.slice().sort((a, b) => b.value - a.value);
+				const sorted_values = indexed_values.slice().sort((a, b) => {
+					  if (a >= 0 && b >= 0) {
+						// Both positive, sort in descending order
+						return b - a;
+					  } else if (a < 0 && b < 0) {
+						// Both negative, sort in ascending order
+						return a - b;
+					  } else if (a >= 0 && b < 0) {
+						// Positive numbers come before negative numbers
+						return -1;
+					  } else {
+						// Negative numbers come after positive numbers
+						return 1;
+					  }
+				});
 
 				// inner rings and text
 				sorted_values.forEach(({value, index}) => {
 					const colour = this.colours[index];
-					const rel_value = (value - this.minimum_value) / (this.maximum_value - this.minimum_value);
+					const abs_value = Math.abs(value);
+					const rel_value = (abs_value - this.minimum_value) / (this.maximum_value - this.minimum_value);
 					const rel_angle = rel_value * (this.angle_end - this.angle_start);
-					const angle_val = actual_start + rel_angle;
+					let angle_val = actual_start + rel_angle;
+					
+					// negative values expand from the right
+					let draw_start_angle = actual_start;
+					let draw_end_angle = angle_val;
+					if(value < 0) {
+						draw_start_angle = actual_end - rel_angle;
+						draw_end_angle = actual_end;
+					}
 
 					ctx.beginPath();
 
@@ -67,7 +91,7 @@ function NiceKnob() {
 					if (typeof colour === 'object') {
 						const bar_colour = colour.bar_colour;
 						const glow_colour = colour.glow_colour;
-//	TODO: handle gradient / glow effect
+//	gradient not working
 //						const gradient = ctx.createLinearGradient(20, 0, 220, 0);
 //						gradient.addColorStop(0, bar_colour);
 //						gradient.addColorStop(1, glow_colour);
@@ -79,7 +103,7 @@ function NiceKnob() {
 						ctx.strokeStyle = colour;
 						font_colour = colour;
 					}
-					ctx.arc(center_coord, center_coord, radius, actual_start, angle_val);
+					ctx.arc(center_coord, center_coord, radius, draw_start_angle, draw_end_angle);
 
 					ctx.lineCap = 'butt';
 					ctx.lineWidth = line_width;
@@ -108,9 +132,10 @@ function NiceKnob() {
 				div.appendChild(canvas);
 			},
 			safeValue: function(value) {
-				return value == null
+				let safe_value = value == null
 					? null
-					: Math.round(Math.max(this.minimum_value, Math.min(this.maximum_value, value)));
+					: Math.round(Math.max(this.minimum_value, Math.min(this.maximum_value, Math.abs(value))));
+				return value < 0 ? -safe_value : safe_value;
 			},
 			setValues: function (values, colours, needle_val) {
 				const safe_vals = [];

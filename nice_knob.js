@@ -53,7 +53,9 @@ function NiceKnob() {
 				// and negatives ascending.. whilst keeping track of their
 				// index positions (for related colour lookup below)
 				const indexed_values = this.values.map((value, index) => ({value, index}));
-				const sorted_values = indexed_values.slice().sort((a, b) => {
+				const sorted_values = indexed_values.slice().sort((a_entry, b_entry) => {
+					const a = a_entry.value;
+					const b = b_entry.value;
 					  if (a >= 0 && b >= 0) {
 						// Both positive, sort in descending order
 						return b - a;
